@@ -1,13 +1,23 @@
 "use client";
 import { authClient } from "@/lib/auth-client";
 import {  Avatar, Button } from "@heroui/react";
+import { redirect } from "next/dist/server/api-utils";
 import Image from "next/image";
 import Link from "next/link";
 
 const Navbar = () => {
   const userData = authClient.useSession();
   const user = userData.data?.user;
-console.log(user);
+   const handleSignOut = async () => {
+    await authClient.signOut();
+    redirect('/')
+  }
+
+   if (userData.isPending) {
+    return (
+      <div className="w-8 h-8 rounded-full bg-gray-300 animate-pulse"></div>
+    );
+  }
   return (
     <div className="border-b px-2">
       <nav className=" flex justify-between items-center  py-3 max-w-7xl mx-auto w-full ">
@@ -39,22 +49,8 @@ console.log(user);
         </ul>
 
         <div className="flex gap-4">
-          {user ? (
-            <div className="flex items-center gap-4">
-            
-              <Avatar size="sm">
-              <Avatar.Image
-                alt="user image"
-                src={user?.image}
-                referrerPolicy="no-referrer"
-              />
-              <Avatar.Fallback>{user?.name.charAt(0)}</Avatar.Fallback>
-            </Avatar>
-            <Button onClick={async()=>await authClient.signOut()} size="sm" variant="danger">Sign Out</Button>
-            </div>
-
-          ) : (
-            <ul className="flex gap-4 items-center  text-sm">
+          {!user && (
+            <ul className="flex items-center  text-sm gap-5">
               <li>
                 <Link href={"/signup"}>SignUp</Link>
               </li>
@@ -63,7 +59,23 @@ console.log(user);
               </li>
             </ul>
           )}
+
+          {user && (
+            <div className="flex gap-3">
+              <Avatar size="sm">
+                <Avatar.Image
+                  alt="John Doe"
+                  src={user?.image || "/default-avatar.png"}
+                  referrerPolicy="no-referrer"
+                />
+                <Avatar.Fallback>{user?.name.charAt(0)}</Avatar.Fallback>
+              </Avatar>
+
+              <Button onClick={handleSignOut} size="sm" variant="danger">SignOut</Button>
+            </div>
+          )}
         </div>
+
       </nav>
     </div>
   );
