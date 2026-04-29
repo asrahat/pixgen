@@ -25,20 +25,19 @@ export default function SignUpPage() {
     const email = e.target.email.value;
     const password = e.target.password.value;
 
-    const {data, error} = await authClient.signUp.email({
+    // console.log({name,image,email,password});
+
+    const {data,error} = await authClient.signUp.email({
         name,
-        email,
-        password,
         image,
+        email,
+        password
     })
-    
+    console.log({data,error});
 
-    console.log({data, error})
-
-    if(!error) {
+    if(!error){
         router.push('/')
     }
-
   };
 
   return (
@@ -112,8 +111,6 @@ export default function SignUpPage() {
           </Button>
         </div>
       </Form>
-
-
     </Card>
   );
 }
