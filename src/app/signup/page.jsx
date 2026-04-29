@@ -11,37 +11,53 @@ import {
   Label,
   TextField,
 } from "@heroui/react";
-import { GrGoogle } from "react-icons/gr";
+import { useRouter } from "next/navigation";
 
-export default function SignInPage() {
+export default function SignUpPage() {
+
+    const router = useRouter()
+
   const onSubmit = async (e) => {
     e.preventDefault();
 
+    const name = e.target.name.value;
+    const image = e.target.image.value;
     const email = e.target.email.value;
     const password = e.target.password.value;
 
-    const { data, error } = await authClient.signIn.email({
-      email,
-      password,
-      callbackURL: "/",
-    });
-
-    console.log({ data, error });
-  };
-
-  const handlGoogleSignIn = async () => {
-    await authClient.signIn.social({
-        provider: 'google'
+    const {data, error} = await authClient.signUp.email({
+        name,
+        email,
+        password,
+        image,
     })
-  }
+    
 
+    console.log({data, error})
 
+    if(!error) {
+        router.push('/')
+    }
+
+  };
 
   return (
     <Card className="border mx-auto w-125 py-10 mt-5">
-      <h1 className="text-center text-2xl font-bold">Sign In</h1>
+      <h1 className="text-center text-2xl font-bold">Sign Up</h1>
 
       <Form className="flex w-96 mx-auto flex-col gap-4" onSubmit={onSubmit}>
+        <TextField isRequired name="name" type="text">
+          <Label>Name</Label>
+          <Input placeholder="Enter your name" />
+          <FieldError />
+        </TextField>
+
+        <TextField isRequired name="image" type="text">
+          <Label>Image URL</Label>
+          <Input placeholder="Image URL" />
+          <FieldError />
+        </TextField>
+
         <TextField
           isRequired
           name="email"
@@ -97,9 +113,7 @@ export default function SignInPage() {
         </div>
       </Form>
 
-      <p className="text-center">Or</p>
 
-      <Button onClick={handlGoogleSignIn} variant="outline" className={'w-full'}><GrGoogle/> Sign In With Google</Button>
     </Card>
   );
 }
