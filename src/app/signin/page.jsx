@@ -10,10 +10,19 @@ import {
   Form,
   Input,
   Label,
+  Separator,
   TextField,
 } from "@heroui/react";
+import { GrGoogle } from "react-icons/gr";
 
 export default function SignInPage() {
+
+  const handleSignInGoogle = async() =>{
+    await authClient.signIn.social({
+      provider:"google"
+    })
+  }
+
   const onSubmit = async (e) => {
     e.preventDefault();
 
@@ -91,6 +100,10 @@ export default function SignInPage() {
             Reset
           </Button>
         </div>
+        <Separator></Separator>
+        <Button onClick={handleSignInGoogle} variant="outline" className={'text-blue-500 w-full'}>
+         <GrGoogle ></GrGoogle> Sign In With Google
+        </Button>
       </Form>
     </Card>
   );
